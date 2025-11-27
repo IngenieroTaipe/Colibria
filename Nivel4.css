@@ -538,8 +538,8 @@ footer {
 /* Botón siguiente */
 .boton-siguiente {
     position: absolute;
-    bottom: 100px;
-    left: 50%;
+    bottom: 80px;
+    right: 30px;
     transform: translateX(-50%);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -743,12 +743,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .nivel4-main {
-        min-height: calc(100vh - 130px);
-        max-height: calc(100vh - 130px);
-        padding: 10px 8px;
-    }
-    
     .etapa {
         max-width: 100%;
         padding: 0 5px;
@@ -783,7 +777,7 @@ footer {
     .camara-container {
         width: 92%;
         max-width: 550px;
-        aspect-ratio: 4/3;
+        aspect-ratio: 9/16;
         border-width: 6px;
         margin: 5px auto;
     }
@@ -794,7 +788,6 @@ footer {
     
     .palabra-header {
         padding: 10px 25px;
-        bottom: 12px;
         border-width: 3px;
     }
     
@@ -804,9 +797,6 @@ footer {
         padding: 4px;
     }
     
-    .gif-referencia img {
-        width: 70px;
-    }
     
     .boton-siguiente {
         bottom: 75px;
@@ -871,11 +861,6 @@ footer {
         letter-spacing: 1px;
     }
     
-    .palabra-header {
-        padding: 8px 18px;
-        bottom: 8px;
-        border-width: 2px;
-    }
     
     .gif-referencia {
         top: 8px;

@@ -398,7 +398,7 @@ function cargarPalabra() {
 function reproducirGifConContador() {
     let repeticion = 1;
     const maxRepeticiones = 3;
-    const tiempoRepeticion = 5000; // 5 segundos por repetición
+    const tiempoRepeticion = 2000; // 5 segundos por repetición
     
     document.getElementById('repeticion-actual').textContent = repeticion;
 
@@ -514,10 +514,10 @@ async function activarCamara() {
         }, 200);
 
         // Mostrar mensaje de aliento
-        setTimeout(() => mostrarMensajeAliento(), 2000);
+        setTimeout(() => mostrarMensajeAliento(), 5000);
         
         // Mostrar botón siguiente
-        setTimeout(() => mostrarBotonSiguiente(), 5000);
+        setTimeout(() => mostrarBotonSiguiente(), 8000);
 
     } catch (error) {
         console.error('❌ Error al activar cámara:', error);
