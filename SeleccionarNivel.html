@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Nivel</title>
+    <link rel="icon" href="LogoColibria-removebg-preview.png" />
+    <link rel="stylesheet" href="SeleccionarNivel.css">
+</head>
+
+<body background="fondonube2.png">
+    <!-- header -->
+    <header>
+        <button class="back-button" onclick="goToInicio()"><img src="botonAtrasCircular.png" alt="Atras"></button>
+        <img src="LogoEscrito.png" alt="Colibria" class="colibria-icon">
+        <button class="user-button" onclick="goToPerfil()">    <img src="user-icon.png" alt="User"></button>
+    </header>
+
+    <!-- main -->
+    <div class="container">
+
+        <div class="arco-texto">
+            <svg class="arco-svg" viewBox="0 0 900 150">
+                <path id="arco" d="M 0,100 A 850,150 0 0,1 900,100" fill="none" />
+                <text>
+                    <textPath href="#arco" startOffset="50%" text-anchor="middle" class="texto-arco">
+                        SELECCIONAR NIVEL
+                    </textPath>
+                </text>
+            </svg>
+        </div>
+
+        <div class="cont">
+            <button class="nivel-button" onclick="IrNivel(1)">
+                <img src="nivel1.png" alt="Nivel 1">
+            </button>
+                <button class="nivel-button" onclick="IrNivel(2)">
+                <img src="nivel2.png" alt="Nivel 2">
+            </button>
+            <button class="nivel-button" onclick="IrNivel(3)">
+                <img src="nivel3.png" alt="Nivel 3">
+            </button>
+            <button class="nivel-button" onclick="IrNivel(4)">
+                <img src="nivel4.png" alt="Nivel 4">
+            </button>
+
+        </div>
+            
+            
+    </div>
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-phrase">
+                <img src="pieFrase.png" alt="frase">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
+
+<script>
+    const modulo = localStorage.getItem("moduloSeleccionado");
+
+  if (!modulo) {
+    // Si no se eligió un módulo antes, redirigir
+    window.location.href = "modulo.html";
+  }
+
+  function IrNivel(nivel) {
+    // Guarda también el nivel si quieres
+    localStorage.setItem("nivelSeleccionado", nivel);
+    window.location.href = `Nivel${nivel}.html`;
+  }
+    function goToPerfil() {
+        window.location.href = "perfil.html";
+    }
+    function goToInicio() {
+        window.location.href = "SeleccionarModulo.html";
+    }
+</script>

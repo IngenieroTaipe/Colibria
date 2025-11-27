@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practicando NIVEL 2</title>
+    <link rel="icon" href="LogoColibria-removebg-preview.png" />
+    <link rel="stylesheet" href="styleNivel2.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="scriptNivel2.js"></script>
+</head>
+
+<body background="fondoNube.png">
+    <!-- header -->
+    <header>
+        <button class="back-button" onclick="volverMenu()"><img src="botonAtrasCircular.png" alt="Atras"></button>
+        <img src="LogoEscrito.png" alt="Colibria" class="colibria-icon">
+        <button class="user-button" onclick="goToPerfil()">
+            <img src="user-icon.png" alt="User">
+        </button>
+    </header>
+
+    <!-- main -->
+    <div class="container">
+        <div class="arco-texto">
+            <svg class="arco-svg" viewBox="0 0 900 150">
+                <path id="arco" d="M 0,100 A 850,150 0 0,1 900,100" fill="none" />
+                <text>
+                    <textPath href="#arco" startOffset="50%" text-anchor="middle" class="texto-arco">
+                        PRACTICANDO
+                    </textPath>
+                </text>
+            </svg>
+        </div>
+
+        <div class="cont">
+            <img src="nivel2.png" alt="Logo" class="colibriAzul">
+            <div class="game-box">
+                <div class="game-content">
+                    <h2 class="titulo-nivel">Selecciona la seña correcta</h2>
+                    <div class="nivel2-layout">
+                        <div class="imagen-central">
+                            <img id="imagen-principal" src="" alt="Palabra">
+                        </div>
+                        <div class="opciones-senas" id="opciones-senas">
+                            <!-- Aquí irán las 4 opciones -->
+                        </div>
+                        <button class="boton-enviar" onclick="verificarSeleccion()">Enviar</button>
+                    </div>
+                    <p id="feedback"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="overlay" class="overlay"></div>
+    </div>
+
+    <div id="zoom-viewer" class="zoom-viewer">
+        <img id="zoom-image" src="" alt="Zoom">
+        <button id="close-zoom" class="close-zoom">✕</button>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-phrase">
+                <img src="pieFrase.png" alt="frase">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

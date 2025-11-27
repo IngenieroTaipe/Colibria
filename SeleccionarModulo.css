@@ -1,0 +1,226 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    font-family: Belleza;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+/*header*/
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.colibria-icon {
+    align-items: center;
+    inline-size: 200px;
+    margin-block-start: 5px;
+    text-align: center;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.user-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button img{
+    width: 60px;
+    height: 50px;
+}
+
+.user-button img{
+    width: 60px;
+    height: 60px;
+}
+
+/* Content */
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0px 50px 50px 50px;
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.arco-svg {
+    width: 100%; /* Escala proporcionalmente */
+    max-width: 900px; /* Máximo ancho */
+    height: 150px; /* Ajusta la altura automáticamente */
+}
+
+.arco-texto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
+.texto-arco {
+    font-family: 'Comicy';
+    font-size: 4.5em; 
+    fill: #5e17eb; 
+    stroke: white;
+}
+
+.texto-medio{
+    font-family: 'Comicy';
+    font-size: 2em; 
+    color: #231f20;
+    margin-bottom: 20px;
+    margin-top: -60px; 
+}
+
+.cont{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-top: -40px;
+}
+
+/* Botones de selección */
+.modulo-button {
+    background-color: #4AA3AF;
+    border: none;
+    padding: 20px 30px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modulo-button:hover {
+    background-color: #3b8a95;
+    transform: scale(1.05);
+}
+
+.modulo-button img {
+    height: 60vh;
+    width: 45vh;
+    margin-right: 10px;
+}
+
+/* Fondo oscuro cuando aparece un mensaje */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+
+/* Footer */
+
+footer {
+    background-color: #4AA3AF;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: right;
+    width: 100%;
+}
+
+.footer-phrase img {
+    float: left;
+    height: 70px;
+    object-fit: contain;
+}
+
+@font-face {
+    font-family: 'Comicy';
+    src: url('fonts/Comicy.ttf') format('truetype');
+}
+
+
+@media (max-width: 768px) {
+
+    .colibria-icon {
+        width: 150px;
+    }
+
+    .back-button img {
+        width: 40px;
+        height: 38px;
+    }  
+
+    .user-button img {
+        width: 30px;
+        height: 30px;
+    }  
+
+ /* Cambia el texto para que sean dos líneas */
+
+    .arco-texto{
+        margin-left: -40px;
+    }
+
+    .texto-arco {
+        font-size: 4.5em; /* Reduce el tamaño */
+        white-space: pre-wrap; /* Permite que el texto se divida */
+    }
+
+    textPhat{
+        letter-spacing: 0.5px; /* Ajusta el espaciado */
+    }
+
+    .texto-arco textPath {
+        letter-spacing: 0.5px; /* Ajusta el espaciado */
+    }
+
+    .arco-svg path#arco {
+        d: path("M 0,120 A 850,180 0 0,1 900,120"); /* Arco ajustado */
+    }
+
+    .modulo-button {
+    padding: 10px 15px;
+    }
+
+    .modulo-button img {
+        height: 50vh;
+        width: 30vh;
+        margin-right: 10px;
+    }
+
+      .footer-phrase img {
+    height: 50px;
+    }
+}

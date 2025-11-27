@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practicando NIVEL 3</title>
+    <link rel="icon" href="LogoColibria-removebg-preview.png" />
+    <link rel="stylesheet" href="styleNivel3.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="scriptNivel3.js"></script>
+</head>
+
+<body background="fondonube2.png">
+    <!-- header -->
+    <header>
+        <button class="back-button" onclick="volverMenu()"><img src="botonAtrasCircular.png" alt="Atras"></button>
+        <img src="LogoEscrito.png" alt="Colibria" class="colibria-icon">
+        <button class="user-button" onclick="goToPerfil()">    <img src="user-icon.png" alt="User"></button>
+    </header>
+
+    <!-- main -->
+    <div class="container">
+
+        <div class="arco-texto">
+            <svg class="arco-svg" viewBox="0 0 900 150">
+                <path id="arco" d="M 0,100 A 850,150 0 0,1 900,100" fill="none" />
+                <text>
+                    <textPath href="#arco" startOffset="50%" text-anchor="middle" class="texto-arco">
+                        PRACTICANDO
+                    </textPath>
+                </text>
+            </svg>
+        </div>
+
+        <div class="cont">
+            <img src="nivel3.png" alt="Logo" class="colibriAzul">
+            <div class="game-box">
+                <div class="game-content">
+                    <h2 class="titulo-nivel">Escribe la palabra</h2>
+                    
+                    <!-- NIVEL 3 -->
+                       <div class="area-imagen-sena">
+                            <img id="imagen-palabra" class="img-n3" src="/img/familia/mama.png" alt="Imagen">
+                            <img id="imagen-sena" class="img-n3" src="/senas/familia/sena_mama.png" alt="Seña">
+                        </div>
+                     <div class="teclado-container">
+                        <div id="caja-escritura" class="caja-escritura">_ _ _</div>
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <button id="toggle-case" class="toggle-case">Cambiar a minúscula</button>
+                        </div>
+                            <div class="fila-teclado">
+                                <div class="tecla" data-tecla="Q">Q</div>
+                                <div class="tecla" data-tecla="W">W</div>
+                                <div class="tecla" data-tecla="E">E</div>
+                                <div class="tecla" data-tecla="R">R</div>
+                                <div class="tecla" data-tecla="T">T</div>
+                                <div class="tecla" data-tecla="Y">Y</div>
+                                <div class="tecla" data-tecla="U">U</div>
+                                <div class="tecla" data-tecla="I">I</div>
+                                <div class="tecla" data-tecla="O">O</div>
+                                <div class="tecla" data-tecla="P">P</div>
+                            </div>
+                            <div class="fila-teclado">
+                                <div class="tecla" data-tecla="A">A</div>
+                                <div class="tecla" data-tecla="S">S</div>
+                                <div class="tecla" data-tecla="D">D</div>
+                                <div class="tecla" data-tecla="F">F</div>
+                                <div class="tecla" data-tecla="G">G</div>
+                                <div class="tecla" data-tecla="H">H</div>
+                                <div class="tecla" data-tecla="J">J</div>
+                                <div class="tecla" data-tecla="K">K</div>
+                                <div class="tecla" data-tecla="L">L</div>
+                                <div class="tecla" data-tecla="Ñ">Ñ</div>
+                            </div>
+                            <div class="fila-teclado">
+                                <div class="tecla" data-tecla="Z">Z</div>
+                                <div class="tecla" data-tecla="X">X</div>
+                                <div class="tecla" data-tecla="C">C</div>
+                                <div class="tecla" data-tecla="V">V</div>
+                                <div class="tecla" data-tecla="B">B</div>
+                                <div class="tecla" data-tecla="N">N</div>
+                                <div class="tecla" data-tecla="M">M</div>
+                            </div>
+                            <div class="fila-teclado">
+                                <div class="tecla" data-tecla=" " id="tecla-espacio"> Espacio </div>
+                                <div class="tecla" id="tecla-borrar">⌫</div>
+                            </div>
+                            </div>
+                    <p id="feedback"></p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div id="overlay" class="overlay">
+        </div>
+
+    </div>
+
+    <div id="zoom-viewer" class="zoom-viewer">
+        <img id="zoom-image" src="" alt="Zoom">
+        <button id="close-zoom" class="close-zoom">✕</button>
+    </div>
+    
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-phrase">
+                <img src="pieFrase.png" alt="frase">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
