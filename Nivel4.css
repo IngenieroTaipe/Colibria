@@ -429,17 +429,7 @@ footer {
     display: block;
 }
 
-/* Contenedor de cámara optimizado */
-.camara-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1400px; /* Más ancho en desktop */
-    margin: 0 auto;
-}
+
 
 /* GIF de referencia pequeño */
 .gif-referencia {
