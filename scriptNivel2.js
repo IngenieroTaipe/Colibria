@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function goToPerfil() {
-    window.location.href = '../perfil.html';
+    //window.location.href = '../perfil.html';
 }
 
 function pasarNivel3() {

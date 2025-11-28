@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test MediaPipe - Detección de Manos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .video-canvas-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: #000;
+        }
+
+        #video-camara {
+            display: block;
+            width: 100%;
+            height: auto;
+            transform: scaleX(-1); /* Efecto espejo */
+        }
+
+        #canvas-output {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: scaleX(-1); /* Efecto espejo */
+        }
+
+        .controles {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-iniciar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-iniciar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-detener {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-detener:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-iniciar:disabled,
+        .btn-detener:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .status.activo {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactivo {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.esperando {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖐️ Prueba de Detección de Manos - MediaPipe</h1>
+        
+        <div id="status" class="status inactivo">
+            ⚪ Sistema detenido
+        </div>
+
+        <div class="video-canvas-wrapper">
+            <video id="video-camara" autoplay playsinline muted></video>
+            <canvas id="canvas-output"></canvas>
+        </div>
+
+        <div class="controles">
+            <button id="btn-iniciar" class="btn-iniciar">🚀 Iniciar Detección</button>
+            <button id="btn-detener" class="btn-detener" disabled>🛑 Detener Detección</button>
+        </div>
+
+        <div class="info-box">
+            <div class="info-item">
+                <span class="info-label">Estado:</span>
+                <span id="estado-texto" class="info-value">Detenido</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Manos detectadas:</span>
+                <span id="manos-detectadas" class="info-value">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">FPS:</span>
+                <span id="fps-contador" class="info-value">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Dedos extendidos:</span>
+                <span id="dedos-extendidos" class="info-value">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MediaPipe Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <script>
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        let hands = null;
+        let camera = null;
+        let canvasCtx = null;
+        let videoElement = null;
+        let canvasElement = null;
+        let deteccionActiva = false;
+        let datosManos = null;
+        let videoStream = null;
+
+        // Para calcular FPS
+        let ultimoTiempo = Date.now();
+        let fps = 0;
+
+        // Elementos del DOM
+        const btnIniciar = document.getElementById('btn-iniciar');
+        const btnDetener = document.getElementById('btn-detener');
+        const statusDiv = document.getElementById('status');
+        const estadoTexto = document.getElementById('estado-texto');
+        const manosDetectadas = document.getElementById('manos-detectadas');
+        const fpsContador = document.getElementById('fps-contador');
+        const dedosExtendidos = document.getElementById('dedos-extendidos');
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        btnIniciar.addEventListener('click', iniciarDeteccion);
+        btnDetener.addEventListener('click', detenerDeteccion);
+
+        // ============================================
+        // FUNCIÓN PRINCIPAL: INICIAR DETECCIÓN
+        // ============================================
+        async function iniciarDeteccion() {
+            try {
+                actualizarStatus('esperando', '⏳ Iniciando...');
+                btnIniciar.disabled = true;
+
+                // 1. Obtener acceso a la cámara
+                videoElement = document.getElementById('video-camara');
+                canvasElement = document.getElementById('canvas-output');
+                
+                if (!canvasElement) {
+                    throw new Error('Canvas no encontrado');
+                }
+                
+                canvasCtx = canvasElement.getContext('2d');
+
+                // Solicitar cámara
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    },
+                    audio: false
+                });
+
+                videoElement.srcObject = videoStream;
+                await videoElement.play();
+
+                console.log('✅ Cámara iniciada');
+
+                // 2. Inicializar MediaPipe Hands
+                hands = new Hands({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                });
+
+                hands.setOptions({
+                    maxNumHands: 2,
+                    modelComplexity: 1,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                hands.onResults(procesarResultados);
+                
+                console.log('✅ MediaPipe Hands inicializado');
+
+                // 3. Iniciar la cámara con MediaPipe
+                camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        if (deteccionActiva) {
+                            await hands.send({image: videoElement});
+                        }
+                    },
+                    width: 1280,
+                    height: 720
+                });
+
+                await camera.start();
+                deteccionActiva = true;
+
+                console.log('✅ Detección activa');
+
+                // Actualizar UI
+                actualizarStatus('activo', '🟢 Detección activa');
+                btnDetener.disabled = false;
+
+            } catch (error) {
+                console.error('❌ Error al iniciar detección:', error);
+                alert('Error: ' + error.message);
+                actualizarStatus('inactivo', '❌ Error al iniciar');
+                btnIniciar.disabled = false;
+            }
+        }
+
+        // ============================================
+        // PROCESAR RESULTADOS DE MEDIAPIPE
+        // ============================================
+        function procesarResultados(results) {
+            datosManos = results;
+            calcularFPS();
+            dibujarResultados();
+            actualizarInfoManos();
+        }
+
+        // ============================================
+        // DIBUJAR EN CANVAS
+        // ============================================
+        function dibujarResultados() {
+            if (!canvasCtx || !videoElement || !canvasElement) return;
+            
+            // Ajustar el canvas al tamaño del video
+            const videoWidth = videoElement.videoWidth;
+            const videoHeight = videoElement.videoHeight;
+            
+            if (videoWidth === 0 || videoHeight === 0) return;
+            
+            if (canvasElement.width !== videoWidth || canvasElement.height !== videoHeight) {
+                canvasElement.width = videoWidth;
+                canvasElement.height = videoHeight;
+            }
+            
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            
+            // Dibujar el video en el canvas
+            canvasCtx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+            
+            // Dibujar landmarks de las manos
+            if (datosManos && datosManos.multiHandLandmarks) {
+                for (const landmarks of datosManos.multiHandLandmarks) {
+                    // Conexiones (líneas verdes)
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+                        color: '#00FF00',
+                        lineWidth: 3
+                    });
+                    // Puntos (círculos rojos)
+                    drawLandmarks(canvasCtx, landmarks, {
+                        color: '#FF0000',
+                        lineWidth: 2,
+                        radius: 5
+                    });
+                }
+            }
+            
+            canvasCtx.restore();
+        }
+
+        // ============================================
+        // ACTUALIZAR INFO DE MANOS
+        // ============================================
+        function actualizarInfoManos() {
+            if (!datosManos || !datosManos.multiHandLandmarks) {
+                manosDetectadas.textContent = '0';
+                dedosExtendidos.textContent = '-';
+                return;
+            }
+
+            const numManos = datosManos.multiHandLandmarks.length;
+            manosDetectadas.textContent = numManos;
+
+            if (numManos > 0) {
+                const mano = datosManos.multiHandLandmarks[0];
+                const dedos = contarDedosExtendidos(mano);
+                dedosExtendidos.textContent = dedos;
+            } else {
+                dedosExtendidos.textContent = '-';
+            }
+        }
+
+        // ============================================
+        // CONTAR DEDOS EXTENDIDOS
+        // ============================================
+        function contarDedosExtendidos(mano) {
+            let count = 0;
+            const dedos = [
+                { tip: 4, pip: 2 },   // Pulgar
+                { tip: 8, pip: 6 },   // Índice
+                { tip: 12, pip: 10 }, // Medio
+                { tip: 16, pip: 14 }, // Anular
+                { tip: 20, pip: 18 }  // Meñique
+            ];
+            
+            dedos.forEach(dedo => {
+                if (mano[dedo.tip].y < mano[dedo.pip].y) {
+                    count++;
+                }
+            });
+            
+            return count;
+        }
+
+        // ============================================
+        // CALCULAR FPS
+        // ============================================
+        function calcularFPS() {
+            const ahora = Date.now();
+            fps = Math.round(1000 / (ahora - ultimoTiempo));
+            ultimoTiempo = ahora;
+            fpsContador.textContent = fps;
+        }
+
+        // ============================================
+        // DETENER DETECCIÓN
+        // ============================================
+        function detenerDeteccion() {
+            deteccionActiva = false;
+
+            if (camera) {
+                camera.stop();
+                camera = null;
+            }
+
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+
+            if (canvasCtx && canvasElement) {
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            }
+
+            actualizarStatus('inactivo', '⚪ Sistema detenido');
+            estadoTexto.textContent = 'Detenido';
+            manosDetectadas.textContent = '0';
+            fpsContador.textContent = '0';
+            dedosExtendidos.textContent = '-';
+
+            btnIniciar.disabled = false;
+            btnDetener.disabled = true;
+
+            console.log('🛑 Detección detenida');
+        }
+
+        // ============================================
+        // ACTUALIZAR STATUS
+        // ============================================
+        function actualizarStatus(tipo, mensaje) {
+            statusDiv.className = `status ${tipo}`;
+            statusDiv.textContent = mensaje;
+            estadoTexto.textContent = tipo === 'activo' ? 'Activo' : tipo === 'esperando' ? 'Iniciando' : 'Detenido';
+        }
+
+        // ============================================
+        // LIMPIEZA AL SALIR
+        // ============================================
+        window.addEventListener('beforeunload', () => {
+            if (deteccionActiva) {
+                detenerDeteccion();
+            }
+        });
+    </script>
+</body>
+</html>

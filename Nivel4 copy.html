@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practicando NIVEL 4</title>
+    <link rel="icon" href="LogoColibria-removebg-preview.png" />
+    <link rel="stylesheet" href="Nivel4 copy.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="Nivel4 copy.js"></script>
+    <script src="deteccion-senas.js"></script>
+    <!-- MediaPipe para detección de manos y rostro -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+
+<body background="fondonube2.png">
+    <!-- header -->
+    <header>
+        <button class="back-button" onclick="volverMenu()"><img src="botonAtrasCircular.png" alt="Atras"></button>
+        <img src="LogoEscrito.png" alt="Colibria" class="colibria-icon">
+        <button class="user-button" onclick="goToPerfil()">    <img src="user-icon.png" alt="User"></button>
+    </header>
+
+    <!-- main -->
+    <div class="container">
+        <div class="cont">
+            <!-- Etapa 1: Instrucciones iniciales -->
+        <div id="etapa-instrucciones" class="etapa activa">
+            <div class="instrucciones-box">
+                <h2>¡Aprende haciendo!</h2>
+                <div class="instrucciones-iconos">
+                    <div class="icono-item">
+                        <span class="icono">👀</span>
+                        <p>Mira la seña</p>
+                    </div>
+                    <div class="icono-item">
+                        <span class="icono">✋</span>
+                        <p>Haz la seña tú</p>
+                    </div>
+                    <div class="icono-item">
+                        <span class="icono">😄</span>
+                        <p>¡Aprende!</p>
+                    </div>
+                </div>
+                <button onclick="iniciarNivel()" class="boton-grande boton-comenzar">Comenzar</button>
+            </div>
+        </div>
+
+        <!-- Etapa 2: Presentación de la seña -->
+        <div id="etapa-presentacion" class="etapa">
+            <div class="presentacion-box">
+                <h2 id="palabra-titulo" class="palabra-titulo">PALABRA</h2>
+                
+                <div class="contenedor-visuales"> 
+                    <div class="contenedor-gif">
+                        <img id="gif-sena" class="gif-sena" src="" alt="Seña">
+                    </div>
+                    <div class="imagen-apoyo-container">
+                        <img id="imagen-apoyo" class="imagen-apoyo" src="" alt="Ilustración">
+                    </div>
+                </div>
+                
+                <div class="contador-repeticiones">
+                    <span id="repeticion-actual">1</span> / 3
+                </div>  
+            </div>
+        </div>
+
+        <!-- Etapa 3: Cuenta regresiva -->
+        <div id="etapa-cuenta" class="etapa">
+            <div class="cuenta-regresiva-box">
+                <p class="texto-preparate">¡Prepárate para hacer la seña!</p>
+                <div id="numero-cuenta" class="numero-cuenta">3</div>
+            </div>
+        </div>
+
+        <!-- Etapa 4: Cámara / Espejo -->
+        <div id="etapa-camara" class="etapa">
+            <div class="camara-container">
+                <!-- Palabra en la parte superior -->
+                <div class="palabra-header">
+                    <span id="palabra-camara" class="palabra-texto">PALABRA</span>
+                </div>
+
+                <!-- Video de la cámara -->
+                <video id="video-camara" class="video-espejo" autoplay playsinline></video>
+                <!-- Video oculto, usamos canvas -->
+                <video id="video-camara" class="video-espejo" autoplay playsinline style="display:none;"></video>
+
+                <!-- Canvas para dibujar landmarks -->
+                <canvas id="canvas-output" class="video-espejo"></canvas>
+
+                <!-- Indicador de precisión (NUEVO) -->
+                <div id="indicador-precision" class="indicador-precision">
+                    <div class="barra-precision">
+                        <div id="barra-progreso" class="barra-progreso"></div>
+                    </div>
+                    <span id="texto-precision">0%</span>
+                </div>
+
+                <!-- GIF de referencia pequeño (esquina) -->
+                <div id="gif-referencia" class="gif-referencia">
+                    <img id="gif-mini" src="" alt="Referencia">
+                </div>
+
+                <!-- Modal para ampliar GIF -->
+                <div id="modal-gif" class="modal-gif">
+                    <button id="cerrar-modal" class="cerrar-modal">✖️</button>
+                    <img id="gif-ampliado" src="" alt="Seña ampliada">
+                </div>
+
+                <!-- Mensaje de aliento -->
+                <div id="mensaje-aliento" class="mensaje-aliento">
+                    ¡Muy bien! Lo estás logrando 👏
+                </div>
+
+                <!-- Botón siguiente (aparece después de un tiempo) -->
+                <button id="boton-siguiente" class="boton-siguiente oculto" onclick="siguientePalabra()">
+                    Siguiente →
+                </button>
+            </div>
+        </div>
+
+        <!-- Etapa 5: Felicitación final -->
+        <div id="etapa-final" class="etapa">
+            <div class="final-box">
+                <img src="/img/ganaste.png" alt="¡Completado!" class="ganaste-img">
+                <h2>¡Has completado el Nivel 4! 🎉</h2>
+                <div class="botones-final">
+                    <button onclick="reiniciarNivel()" class="boton-final">Volver a practicar</button>
+                    <button onclick="volverMenu()" class="boton-final">Ir al menú</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div id="zoom-viewer" class="zoom-viewer">
+        <img id="zoom-image" src="" alt="Zoom">
+        <button id="close-zoom" class="close-zoom">✕</button>
+    </div>
+    
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-phrase">
+                <img src="pieFrase.png" alt="frase">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

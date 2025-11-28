@@ -461,22 +461,29 @@ async function activarCamara() {
     try {
         console.log('Activando cámara seleccionada:', camaraSeleccionada);
         
-        if (videoStream) {
-            videoStream.getTracks().forEach(track => track.stop());
+        // 🔥 REUTILIZAR EL STREAM DE LA VISTA PREVIA SI EXISTE
+        if (window.previewStream && window.previewStream.active) {
+            console.log('✅ Reutilizando stream de vista previa');
+            videoStream = window.previewStream;
+        } else {
+            // Si no hay stream previo, crear uno nuevo
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+
+            const constraints = {
+                video: {
+                    deviceId: camaraSeleccionada ? { exact: camaraSeleccionada } : undefined,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: camaraSeleccionada ? undefined : 'user'
+                },
+                audio: false
+            };
+
+            videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+            console.log('Stream de cámara obtenido');
         }
-
-        const constraints = {
-            video: {
-                deviceId: camaraSeleccionada ? { exact: camaraSeleccionada } : undefined,
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: camaraSeleccionada ? undefined : 'user'
-            },
-            audio: false
-        };
-
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        console.log('Stream de cámara obtenido');
         
         videoElement.srcObject = videoStream;
         videoElement.muted = true;
@@ -484,27 +491,38 @@ async function activarCamara() {
         videoElement.setAttribute('playsinline', '');
         videoElement.setAttribute('webkit-playsinline', '');
         
+        // Esperar a que el video esté listo
         await new Promise((resolve, reject) => {
             videoElement.onloadedmetadata = () => {
                 console.log('Metadatos cargados:', videoElement.videoWidth, 'x', videoElement.videoHeight);
                 resolve();
             };
             videoElement.onerror = reject;
-            setTimeout(() => reject(new Error('Timeout')), 5000);
+            setTimeout(() => reject(new Error('Timeout esperando metadatos')), 5000);
         });
         
         await videoElement.play();
         console.log('✅ Video reproduciéndose');
         
+        // Esperar un frame para asegurar que el video está realmente activo
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
         // **INICIAR DETECCIÓN DE SEÑAS**
         if (typeof iniciarCamaraConDeteccion === 'function') {
+            console.log('Iniciando detección de señas...');
             await iniciarCamaraConDeteccion();
+        } else {
+            console.error('⚠️ iniciarCamaraConDeteccion no está definida');
         }
         
+        // Verificación adicional
         setTimeout(() => {
             if (videoElement.paused) {
                 console.warn('Video pausado, reintentando...');
                 videoElement.play();
+            }
+            if (!videoElement.srcObject) {
+                console.error('⚠️ Video sin srcObject');
             }
         }, 200);
 
