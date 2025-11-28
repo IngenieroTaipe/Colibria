@@ -1372,3 +1372,169 @@ footer {
         font-size: 0.85rem;
     }
 }
+
+
+/* ============================================
+   ORIENTACIÓN HORIZONTAL EN MÓVILES
+============================================ */
+
+/* Detectar orientación landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    
+    /* Ajustar contenedor de cámara para landscape */
+    .camara-container {
+        width: 95%;
+        max-width: 90vh; /* Usa la altura de la ventana como límite */
+        aspect-ratio: 16/9; /* Formato horizontal */
+    }
+    
+    /* Palabra - mantener en la parte inferior */
+    .palabra-header {
+        bottom: 15px;
+        padding: 10px 30px;
+        max-width: 80%;
+    }
+    
+    .palabra-texto {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+    }
+    
+    /* Mensaje de aliento - centrado */
+    .mensaje-aliento {
+        font-size: 1.5rem;
+        padding: 20px 35px;
+        max-width: 70%;
+    }
+    
+    /* Botón siguiente - esquina inferior derecha */
+    .boton-siguiente {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+    }
+    
+    /* GIF de referencia - mantener en esquina superior derecha */
+    .gif-referencia {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .gif-referencia img {
+        width: 90px;
+    }
+    
+    /* Indicador de precisión (si lo tienes) */
+    .indicador-precision {
+        top: 15px;
+        left: 15px;
+        padding: 10px 18px;
+        min-width: 140px;
+    }
+}
+
+/* Orientación landscape en pantallas muy pequeñas */
+@media (max-width: 640px) and (orientation: landscape) {
+    
+    .camara-container {
+        width: 98%;
+        max-width: 85vh;
+    }
+    
+    .palabra-header {
+        bottom: 10px;
+        padding: 8px 25px;
+    }
+    
+    .palabra-texto {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+    
+    .mensaje-aliento {
+        font-size: 1.3rem;
+        padding: 15px 30px;
+        max-width: 75%;
+    }
+    
+    .boton-siguiente {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 25px;
+        font-size: 1rem;
+    }
+    
+    .gif-referencia img {
+        width: 75px;
+    }
+    
+    .indicador-precision {
+        padding: 8px 15px;
+        min-width: 120px;
+    }
+    
+    .barra-precision {
+        height: 16px;
+    }
+    
+    #texto-precision {
+        font-size: 0.9rem;
+    }
+}
+
+/* Ajuste adicional para dispositivos muy pequeños en landscape */
+@media (max-width: 480px) and (orientation: landscape) {
+    
+    .camara-container {
+        max-width: 80vh;
+        border-width: 4px;
+    }
+    
+    .palabra-header {
+        bottom: 8px;
+        padding: 6px 20px;
+        border-width: 2px;
+    }
+    
+    .palabra-texto {
+        font-size: 1rem;
+    }
+    
+    .mensaje-aliento {
+        font-size: 1.1rem;
+        padding: 12px 25px;
+    }
+    
+    .boton-siguiente {
+        bottom: 12px;
+        right: 12px;
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .gif-referencia {
+        top: 10px;
+        right: 10px;
+        padding: 3px;
+    }
+    
+    .gif-referencia img {
+        width: 60px;
+    }
+    
+    .indicador-precision {
+        top: 10px;
+        left: 10px;
+        padding: 6px 12px;
+        min-width: 100px;
+    }
+    
+    .barra-precision {
+        height: 14px;
+    }
+    
+    #texto-precision {
+        font-size: 0.85rem;
+    }
+}
