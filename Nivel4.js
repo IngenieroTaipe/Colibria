@@ -445,8 +445,10 @@ function iniciarCuentaRegresiva() {
 async function activarCamara() {
     cambiarEtapa('etapa-cuenta', 'etapa-camara');
     
+    // Actualizar palabra en la cámara
     document.getElementById('palabra-camara').textContent = palabraActual.toUpperCase();
     
+    // Cargar GIF de referencia
     const rutaGif = moduloActual === 'emociones' 
         ? `/senas/${moduloActual}/sena_${palabraActual}.gif`
         : `/senas/${moduloActual}/sena_${palabraActual}.png`;
@@ -454,6 +456,7 @@ async function activarCamara() {
     document.getElementById('gif-mini').src = rutaGif;
     document.getElementById('gif-ampliado').src = rutaGif;
 
+    // Configurar eventos del modal
     configurarModalGif();
 
     const videoElement = document.getElementById('video-camara');
@@ -461,10 +464,12 @@ async function activarCamara() {
     try {
         console.log('Activando cámara seleccionada:', camaraSeleccionada);
         
+        // Detener cualquier stream previo
         if (videoStream) {
             videoStream.getTracks().forEach(track => track.stop());
         }
 
+        // Usar la cámara seleccionada específicamente
         const constraints = {
             video: {
                 deviceId: camaraSeleccionada ? { exact: camaraSeleccionada } : undefined,
@@ -478,35 +483,41 @@ async function activarCamara() {
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
         console.log('Stream de cámara obtenido');
         
+        // Configurar elemento video
         videoElement.srcObject = videoStream;
         videoElement.muted = true;
         videoElement.playsInline = true;
         videoElement.setAttribute('playsinline', '');
         videoElement.setAttribute('webkit-playsinline', '');
         
+        // Esperar a que los metadatos estén listos
         await new Promise((resolve, reject) => {
             videoElement.onloadedmetadata = () => {
                 console.log('Metadatos cargados:', videoElement.videoWidth, 'x', videoElement.videoHeight);
                 resolve();
             };
             videoElement.onerror = reject;
+            
             setTimeout(() => reject(new Error('Timeout')), 5000);
         });
         
+        // Reproducir video
         await videoElement.play();
         console.log('✅ Video reproduciéndose');
         
-        // **INICIAR DETECCIÓN DE SEÑAS**
-        if (typeof iniciarCamaraConDeteccion === 'function') {
-            await iniciarCamaraConDeteccion();
-        }
-        
+        // Verificar que está reproduciendo
         setTimeout(() => {
             if (videoElement.paused) {
                 console.warn('Video pausado, reintentando...');
                 videoElement.play();
             }
         }, 200);
+
+        // Mostrar mensaje de aliento
+        setTimeout(() => mostrarMensajeAliento(), 5000);
+        
+        // Mostrar botón siguiente
+        setTimeout(() => mostrarBotonSiguiente(), 8000);
 
     } catch (error) {
         console.error('❌ Error al activar cámara:', error);
@@ -522,6 +533,7 @@ async function activarCamara() {
         } else if (error.name === 'OverconstrainedError') {
             mensajeError += 'La cámara no soporta la configuración solicitada.';
             
+            // Intentar con configuración básica
             try {
                 console.log('Intentando con configuración básica...');
                 videoStream = await navigator.mediaDevices.getUserMedia({ 
@@ -534,10 +546,8 @@ async function activarCamara() {
                 await videoElement.play();
                 console.log('✅ Funcionó con configuración básica');
                 
-                if (typeof iniciarCamaraConDeteccion === 'function') {
-                    await iniciarCamaraConDeteccion();
-                }
-                
+                setTimeout(() => mostrarMensajeAliento(), 2000);
+                setTimeout(() => mostrarBotonSiguiente(), 5000);
                 return;
             } catch (err2) {
                 console.error('Tampoco funcionó con configuración básica:', err2);
@@ -596,26 +606,28 @@ function siguientePalabra() {
     sonidoTransicion.play();
     vibrar(100);
     
-    // Detener detección
-    if (typeof detenerDeteccion === 'function') {
-        detenerDeteccion();
-    }
-    
+    // 1. Detener cámara inmediatamente
     if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
         videoStream = null;
     }
 
+    // 2. Limpiar UI
     document.getElementById('boton-siguiente').classList.add('oculto');
-    document.getElementById('mensaje-aliento').classList.remove('mostrar');
+    document.getElementById('mensaje-aliento').classList.remove('mostrar'); // Limpieza extra
 
+    // 3. Verificar si quedan palabras antes de cambiar a la presentación
     const disponibles = modulos[moduloActual].filter(p => !palabrasUsadas.includes(p));
 
     if (disponibles.length === 0) {
+        // SI NO quedan palabras, terminamos el nivel
+        console.log("Nivel completado. Mostrando pantalla final.");
+        // **IMPORTANTE:** Aquí llamas directamente a mostrarPantallaFinal()
         mostrarPantallaFinal();
-        return;
+        return; // Salimos de la función
     }
 
+    // 4. Si AÚN quedan palabras, cambiamos a la etapa de presentación y cargamos la siguiente
     cambiarEtapa('etapa-camara', 'etapa-presentacion');
     cargarPalabra();
 }
